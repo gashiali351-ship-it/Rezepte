@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Outfit für Lea</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { background: #0F1923; color: #F5F0E8; font-family: -apple-system, 'SF Pro Display', 'Inter', sans-serif; min-height: 100vh; padding-bottom: 40px; }
+  .header { background: #151F2B; border-bottom: 1px solid #1E2D3D; padding: 0 16px; position: sticky; top: 0; z-index: 100; }
+  .header-inner { max-width: 500px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 60px; }
+  .header-title { font-size: 20px; font-weight: 900; letter-spacing: -0.03em; }
+  .header-sub { font-size: 11px; color: #7EB8D4; letter-spacing: 0.06em; text-transform: uppercase; margin-top: -2px; }
+  .main { max-width: 500px; margin: 0 auto; padding: 20px 16px; }
+
+  /* Weather Card */
+  .weather-card { background: linear-gradient(135deg, #1A3A5C, #0F2540); border: 1px solid #1E3A5F; border-radius: 20px; padding: 24px; margin-bottom: 20px; position: relative; overflow: hidden; }
+  .weather-card::before { content: ""; position: absolute; top: -40px; right: -40px; width: 150px; height: 150px; background: radial-gradient(circle, #7EB8D444, transparent 70%); pointer-events: none; }
+  .weather-location { font-size: 11px; font-weight: 700; color: #7EB8D4; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+  .weather-main { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+  .weather-icon { font-size: 56px; line-height: 1; }
+  .weather-temp { font-size: 52px; font-weight: 900; letter-spacing: -0.04em; color: #F5F0E8; }
+  .weather-desc { font-size: 16px; color: #A0C4D8; margin-top: 2px; }
+  .weather-details { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .weather-detail { background: #0F2540; border-radius: 10px; padding: 10px 12px; }
+  .detail-label { font-size: 10px; color: #5A8A9F; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px; }
+  .detail-val { font-size: 15px; font-weight: 700; color: #D0E8F0; }
+
+  /* City Input */
+  .city-section { margin-bottom: 20px; }
+  .field-row { display: flex; gap: 8px; }
+  .field-input { flex: 1; background: #151F2B; border: 1px solid #1E2D3D; border-radius: 10px; padding: 12px 14px; color: #F5F0E8; font-size: 14px; outline: none; font-family: inherit; transition: border-color 0.2s; }
+  .field-input:focus { border-color: #7EB8D4; }
+  .btn-blue { background: linear-gradient(135deg, #2A6FA8, #1A5080); border: none; border-radius: 10px; padding: 12px 18px; color: #fff; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; white-space: nowrap; }
+  .btn-blue:disabled { opacity: 0.5; }
+
+  /* Outfit Card */
+  .outfit-card { background: #151F2B; border: 1px solid #1E2D3D; border-radius: 20px; padding: 22px; margin-bottom: 20px; position: relative; overflow: hidden; }
+  .outfit-stripe { position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #F4A460, #FFD700, #FF8C6B); }
+  .outfit-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+  .outfit-avatar { font-size: 36px; }
+  .outfit-title { font-size: 18px; font-weight: 800; color: #F5F0E8; }
+  .outfit-age { font-size: 11px; color: #7EB8D4; letter-spacing: 0.06em; text-transform: uppercase; }
+  .outfit-text { color: #C8D8E0; font-size: 15px; line-height: 1.8; white-space: pre-wrap; }
+  .outfit-items { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+  .outfit-item { background: #0F1923; border: 1px solid #1E2D3D; border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; gap: 10px; }
+  .outfit-item-icon { font-size: 22px; }
+  .outfit-item-text { font-size: 14px; color: #D0E0E8; line-height: 1.4; }
+
+  /* Manual Weather */
+  .manual-section { background: #151F2B; border: 1px solid #1E2D3D; border-radius: 16px; padding: 18px; margin-bottom: 20px; }
+  .section-label { font-size: 11px; font-weight: 700; color: #7EB8D4; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 14px; }
+  .temp-slider-wrap { margin-bottom: 16px; }
+  .temp-display { font-size: 32px; font-weight: 900; color: #F5F0E8; margin-bottom: 8px; }
+  input[type=range] { width: 100%; accent-color: #7EB8D4; height: 4px; }
+  .condition-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .cond-btn { background: #0F1923; border: 1px solid #1E2D3D; border-radius: 10px; padding: 10px; color: #888; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; display: flex; align-items: center; gap: 6px; transition: all 0.15s; }
+  .cond-btn.active { background: #1A3A5C; border-color: #7EB8D4; color: #D0E8F0; }
+  .btn-outfit { width: 100%; background: linear-gradient(135deg, #F4A460, #E08040); border: none; border-radius: 12px; padding: 14px; color: #1C1C1E; font-size: 15px; font-weight: 800; cursor: pointer; font-family: inherit; margin-top: 16px; }
+  .btn-outfit:disabled { opacity: 0.5; }
+
+  /* Loading */
+  .loading-dots { display: inline-flex; gap: 4px; align-items: center; }
+  .loading-dots span { width: 6px; height: 6px; background: #1C1C1E; border-radius: 50%; animation: bounce 1.2s infinite; }
+  .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce { 0%,80%,100%{transform:scale(0.6);opacity:0.5} 40%{transform:scale(1);opacity:1} }
+
+  /* Setup */
+  .setup-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .setup-card { background: #151F2B; border: 1px solid #1E2D3D; border-radius: 20px; padding: 32px 28px; width: 100%; max-width: 440px; }
+  .setup-logo { font-size: 40px; margin-bottom: 16px; }
+  .setup-title { font-size: 22px; font-weight: 900; color: #F5F0E8; margin-bottom: 8px; }
+  .setup-sub { font-size: 14px; color: #888; line-height: 1.6; margin-bottom: 24px; }
+  .setup-input { width: 100%; background: #0F1923; border: 1px solid #1E2D3D; border-radius: 10px; padding: 13px 14px; color: #F5F0E8; font-size: 14px; outline: none; font-family: inherit; margin-bottom: 12px; }
+  .btn-setup { width: 100%; background: linear-gradient(135deg, #2A6FA8, #1A5080); border: none; border-radius: 12px; padding: 14px; color: #fff; font-size: 15px; font-weight: 800; cursor: pointer; font-family: inherit; }
+  .setup-note { font-size: 11px; color: #555; margin-top: 12px; line-height: 1.6; }
+  .setup-error { color: #FF453A; font-size: 13px; margin-bottom: 10px; }
+  .error-box { background: #2A1515; border: 1px solid #FF453A44; border-radius: 10px; padding: 12px 14px; color: #FF8080; font-size: 13px; margin-bottom: 16px; }
+</style>
+</head>
+<body>
+
+<div id="setupScreen" class="setup-screen" style="display:none">
+  <div class="setup-card">
+    <div class="setup-logo">👗</div>
+    <div class="setup-title">Outfit für deine Kleine</div>
+    <div class="setup-sub">Einmalige Einrichtung — gib deinen Anthropic API Key ein.</div>
+    <div class="setup-error" id="setupError" style="display:none"></div>
+    <input class="setup-input" id="keyInput" type="password" placeholder="sk-ant-api03-...">
+    <input class="setup-input" id="nameInput" type="text" placeholder="Name deiner Tochter (z.B. Lea)" style="margin-top:8px">
+    <button class="btn-setup" onclick="saveKey()">Starten</button>
+    <div class="setup-note">API Key von console.anthropic.com. Bleibt nur auf diesem Gerät.</div>
+  </div>
+</div>
+
+<div id="appScreen" style="display:none">
+  <div class="header">
+    <div class="header-inner">
+      <div>
+        <div class="header-title" id="headerTitle">Outfit des Tages</div>
+        <div class="header-sub" id="headerSub">2 Jahre alt</div>
+      </div>
+      <div style="font-size:28px">👧</div>
+    </div>
+  </div>
+  <div class="main">
+    <!-- City Search -->
+    <div class="city-section">
+      <div class="section-label" style="margin-bottom:10px">📍 Standort</div>
+      <div class="field-row">
+        <input class="field-input" id="cityInput" type="text" placeholder="Stadt eingeben... z.B. München" onkeydown="if(event.key==='Enter')fetchWeather()">
+        <button class="btn-blue" id="weatherBtn" onclick="fetchWeather()">Wetter laden</button>
+      </div>
+      <div id="weatherError" class="error-box" style="display:none;margin-top:10px"></div>
+    </div>
+
+    <!-- Weather Display -->
+    <div id="weatherCard" style="display:none">
+      <div class="weather-card">
+        <div class="weather-location">📍 <span id="wCity"></span></div>
+        <div class="weather-main">
+          <div class="weather-icon" id="wIcon"></div>
+          <div>
+            <div class="weather-temp"><span id="wTemp"></span>°</div>
+            <div class="weather-desc" id="wDesc"></div>
+          </div>
+        </div>
+        <div class="weather-details">
+          <div class="weather-detail"><div class="detail-label">Gefühlt</div><div class="detail-val" id="wFeels"></div></div>
+          <div class="weather-detail"><div class="detail-label">Feuchtigkeit</div><div class="detail-val" id="wHumid"></div></div>
+          <div class="weather-detail"><div class="detail-label">Wind</div><div class="detail-val" id="wWind"></div></div>
+        </div>
+      </div>
+      <button class="btn-outfit" id="outfitBtn" onclick="getOutfit()">
+        👗 Was soll sie anziehen?
+      </button>
+    </div>
+
+    <!-- Manual Input (fallback) -->
+    <div class="manual-section" id="manualSection">
+      <div class="section-label">Oder manuell eingeben</div>
+      <div class="temp-slider-wrap">
+        <div class="temp-display"><span id="tempVal">18</span>°C</div>
+        <input type="range" min="-15" max="40" value="18" id="tempSlider" oninput="document.getElementById('tempVal').textContent=this.value">
+      </div>
+      <div class="section-label" style="margin-bottom:8px">Wetterlage</div>
+      <div class="condition-grid">
+        <button class="cond-btn active" id="cond-sonnig" onclick="setCond('sonnig')">☀️ Sonnig</button>
+        <button class="cond-btn" id="cond-bewölkt" onclick="setCond('bewölkt')">⛅ Bewölkt</button>
+        <button class="cond-btn" id="cond-regnerisch" onclick="setCond('regnerisch')">🌧️ Regen</button>
+        <button class="cond-btn" id="cond-kalt" onclick="setCond('kalt')">❄️ Kalt/Schnee</button>
+      </div>
+      <button class="btn-outfit" id="manualOutfitBtn" onclick="getManualOutfit()">
+        👗 Was soll sie anziehen?
+      </button>
+    </div>
+
+    <!-- Outfit Result -->
+    <div id="outfitResult" style="display:none">
+      <div class="outfit-card">
+        <div class="outfit-stripe"></div>
+        <div class="outfit-header">
+          <div class="outfit-avatar">👧</div>
+          <div>
+            <div class="outfit-title" id="outfitTitle">Outfit für heute</div>
+            <div class="outfit-age">2 Jahre • KI Empfehlung</div>
+          </div>
+        </div>
+        <div class="outfit-items" id="outfitItems"></div>
+        <div class="outfit-text" id="outfitExtra" style="margin-top:14px;font-size:13px;color:#7EB8D4"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const KEY_STORAGE = "grs-api-key";
+const NAME_STORAGE = "grs-child-name";
+const WEATHER_KEY = "2f8b4e6c9a1d3f7e5b0c8a2d4f6e1b3c"; // placeholder — replaced by open-meteo (free, no key needed)
+let currentCondition = "sonnig";
+let weatherData = null;
+
+function getKey() { return localStorage.getItem(KEY_STORAGE)||""; }
+function getChildName() { return localStorage.getItem(NAME_STORAGE)||"deine Tochter"; }
+
+function saveKey() {
+  const k=document.getElementById("keyInput").value.trim();
+  const n=document.getElementById("nameInput").value.trim();
+  if (!k.startsWith("sk-ant-")) { document.getElementById("setupError").style.display="block"; document.getElementById("setupError").textContent="Ungültiger Key."; return; }
+  localStorage.setItem(KEY_STORAGE,k);
+  if (n) localStorage.setItem(NAME_STORAGE,n);
+  startApp();
+}
+
+function startApp() {
+  document.getElementById("setupScreen").style.display="none";
+  document.getElementById("appScreen").style.display="block";
+  const name=getChildName();
+  document.getElementById("headerTitle").textContent="Outfit für "+name;
+}
+
+function init() { getKey()?startApp():document.getElementById("setupScreen").style.display="flex"; }
+
+function setCond(c) {
+  currentCondition=c;
+  document.querySelectorAll(".cond-btn").forEach(b=>b.classList.remove("active"));
+  document.getElementById("cond-"+c).classList.add("active");
+}
+
+// Weather via Open-Meteo (free, no API key)
+async function fetchWeather() {
+  const city=document.getElementById("cityInput").value.trim();
+  if (!city) return;
+  const btn=document.getElementById("weatherBtn");
+  btn.textContent="..."; btn.disabled=true;
+  document.getElementById("weatherError").style.display="none";
+  try {
+    // Geocode city
+    const geoRes=await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=de&format=json`);
+    const geoData=await geoRes.json();
+    if (!geoData.results||geoData.results.length===0) throw new Error("Stadt nicht gefunden.");
+    const loc=geoData.results[0];
+    // Fetch weather
+    const wRes=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${loc.latitude}&longitude=${loc.longitude}&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code&timezone=auto&forecast_days=1`);
+    const wData=await wRes.json();
+    const c=wData.current;
+    weatherData={
+      city:loc.name+(loc.country?", "+loc.country:""),
+      temp:Math.round(c.temperature_2m),
+      feels:Math.round(c.apparent_temperature),
+      humidity:c.relative_humidity_2m,
+      wind:Math.round(c.wind_speed_10m),
+      code:c.weather_code
+    };
+    showWeather();
+  } catch(e) {
+    document.getElementById("weatherError").style.display="block";
+    document.getElementById("weatherError").textContent="Fehler: "+e.message;
+  }
+  btn.textContent="Wetter laden"; btn.disabled=false;
+}
+
+function weatherCodeToIcon(code) {
+  if (code===0) return "☀️";
+  if (code<=2) return "⛅";
+  if (code<=3) return "☁️";
+  if (code<=48) return "🌫️";
+  if (code<=57) return "🌦️";
+  if (code<=67) return "🌧️";
+  if (code<=77) return "❄️";
+  if (code<=82) return "🌧️";
+  if (code<=86) return "🌨️";
+  if (code<=99) return "⛈️";
+  return "🌡️";
+}
+function weatherCodeToDesc(code) {
+  if (code===0) return "Sonnig";
+  if (code<=2) return "Leicht bewölkt";
+  if (code<=3) return "Bewölkt";
+  if (code<=48) return "Neblig";
+  if (code<=57) return "Nieselregen";
+  if (code<=67) return "Regen";
+  if (code<=77) return "Schnee";
+  if (code<=82) return "Regenschauer";
+  if (code<=86) return "Schneeschauer";
+  if (code<=99) return "Gewitter";
+  return "Unbekannt";
+}
+
+function showWeather() {
+  const d=weatherData;
+  document.getElementById("wCity").textContent=d.city;
+  document.getElementById("wIcon").textContent=weatherCodeToIcon(d.code);
+  document.getElementById("wTemp").textContent=d.temp;
+  document.getElementById("wDesc").textContent=weatherCodeToDesc(d.code);
+  document.getElementById("wFeels").textContent=d.feels+"°C";
+  document.getElementById("wHumid").textContent=d.humidity+"%";
+  document.getElementById("wWind").textContent=d.wind+" km/h";
+  document.getElementById("weatherCard").style.display="block";
+  document.getElementById("manualSection").style.display="none";
+}
+
+async function callAI(prompt) {
+  const res=await fetch("https://api.anthropic.com/v1/messages",{
+    method:"POST",
+    headers:{"Content-Type":"application/json","x-api-key":getKey(),"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+    body:JSON.stringify({model:"claude-haiku-4-5",max_tokens:800,messages:[{role:"user",content:prompt}]})
+  });
+  const data=await res.json();
+  if(data.error) throw new Error(data.error.message);
+  return (data.content||[]).map(b=>b.text||"").join("");
+}
+
+async function getOutfit() {
+  if (!weatherData) return;
+  const btn=document.getElementById("outfitBtn");
+  btn.innerHTML=`<div class="loading-dots"><span></span><span></span><span></span></div>`;
+  btn.disabled=true;
+  const name=getChildName();
+  try {
+    const result=await callAI(`Du bist eine erfahrene Kinderärztin und Styling-Expertin für Kleinkinder.
+${name} ist 2 Jahre alt. Das aktuelle Wetter: ${weatherData.temp}°C (gefühlt ${weatherData.feels}°C), ${weatherCodeToDesc(weatherData.code)}, Feuchtigkeit ${weatherData.humidity}%, Wind ${weatherData.wind} km/h, Standort: ${weatherData.city}.
+
+Empfiehl konkret was ${name} anziehen soll. Antworte NUR mit JSON:
+{"title":"Kurzer Outfit-Titel","items":[{"icon":"👕","text":"Oberteil: ..."},{"icon":"👖","text":"Unterteil: ..."},{"icon":"🧦","text":"Socken/Schuhe: ..."},{"icon":"🧥","text":"Jacke/Außen: ..."}],"tip":"1 kurzer Sicherheits- oder Gesundheitstipp für dieses Wetter bei Kleinkindern"}`);
+    const clean=result.replace(/```json|```/g,"").trim();
+    const parsed=JSON.parse(clean);
+    showOutfit(parsed);
+  } catch(e) {
+    document.getElementById("outfitResult").style.display="block";
+    document.getElementById("outfitItems").innerHTML=`<div style="color:#FF8080">Fehler: ${e.message}</div>`;
+  }
+  btn.innerHTML="👗 Was soll sie anziehen?"; btn.disabled=false;
+}
+
+async function getManualOutfit() {
+  const temp=document.getElementById("tempSlider").value;
+  const btn=document.getElementById("manualOutfitBtn");
+  btn.innerHTML=`<div class="loading-dots"><span></span><span></span><span></span></div>`;
+  btn.disabled=true;
+  const name=getChildName();
+  try {
+    const result=await callAI(`Du bist eine erfahrene Kinderärztin und Styling-Expertin für Kleinkinder.
+${name} ist 2 Jahre alt. Das aktuelle Wetter: ${temp}°C, ${currentCondition}.
+
+Empfiehl konkret was ${name} anziehen soll. Antworte NUR mit JSON:
+{"title":"Kurzer Outfit-Titel","items":[{"icon":"👕","text":"Oberteil: ..."},{"icon":"👖","text":"Unterteil: ..."},{"icon":"🧦","text":"Socken/Schuhe: ..."},{"icon":"🧥","text":"Jacke/Außen: ..."}],"tip":"1 kurzer Sicherheits- oder Gesundheitstipp für dieses Wetter bei Kleinkindern"}`);
+    const clean=result.replace(/```json|```/g,"").trim();
+    const parsed=JSON.parse(clean);
+    showOutfit(parsed);
+  } catch(e) {
+    document.getElementById("outfitResult").style.display="block";
+    document.getElementById("outfitItems").innerHTML=`<div style="color:#FF8080">Fehler: ${e.message}</div>`;
+  }
+  btn.innerHTML="👗 Was soll sie anziehen?"; btn.disabled=false;
+}
+
+function showOutfit(data) {
+  document.getElementById("outfitTitle").textContent=data.title||"Outfit für heute";
+  document.getElementById("outfitItems").innerHTML=(data.items||[]).map(item=>
+    `<div class="outfit-item"><div class="outfit-item-icon">${item.icon||"👗"}</div><div class="outfit-item-text">${escHtml(item.text)}</div></div>`
+  ).join("");
+  document.getElementById("outfitExtra").textContent=data.tip?"💡 "+data.tip:"";
+  document.getElementById("outfitResult").style.display="block";
+  document.getElementById("outfitResult").scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+function escHtml(str){return String(str||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+
+init();
+</script>
+</body>
+</html>
