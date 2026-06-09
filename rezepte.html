@@ -8,30 +8,41 @@
 <title>Meine Rezepte</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  body { background: #141416; color: #F5F0E8; font-family: -apple-system, 'SF Pro Display', 'Inter', sans-serif; min-height: 100vh; padding-bottom: 40px; }
+  body { background: #141416; color: #F5F0E8; font-family: -apple-system, 'SF Pro Display', 'Inter', sans-serif; min-height: 100vh; padding-bottom: 60px; }
   .header { background: #1C1C1E; border-bottom: 1px solid #2C2C2E; padding: 0 16px; position: sticky; top: 0; z-index: 100; }
   .header-inner { max-width: 680px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 60px; }
   .header-title { font-size: 20px; font-weight: 900; letter-spacing: -0.03em; }
   .header-count { font-size: 11px; color: #C8A882; letter-spacing: 0.06em; text-transform: uppercase; margin-top: -2px; }
+  /* Tab Bar */
+  .tabbar { position: fixed; bottom: 0; left: 0; right: 0; background: #1C1C1E; border-top: 1px solid #2C2C2E; display: flex; z-index: 200; padding-bottom: env(safe-area-inset-bottom); }
+  .tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px 0; cursor: pointer; gap: 3px; border: none; background: none; color: #555; font-family: inherit; transition: color 0.15s; }
+  .tab.active { color: #C8A882; }
+  .tab-icon { font-size: 20px; line-height: 1; }
+  .tab-label { font-size: 10px; font-weight: 600; letter-spacing: 0.04em; }
+  /* Buttons */
   .btn-gold { background: linear-gradient(135deg, #C8A882, #A88060); border: none; border-radius: 10px; padding: 9px 16px; color: #1C1C1E; font-size: 13px; font-weight: 800; cursor: pointer; display: flex; align-items: center; gap: 6px; font-family: inherit; }
   .btn-gray { background: #2C2C2E; border: none; border-radius: 10px; padding: 9px 14px; color: #888; cursor: pointer; font-family: inherit; }
   .main { max-width: 680px; margin: 0 auto; padding: 20px 16px; }
+  /* Search */
   .search-wrap { position: relative; margin-bottom: 12px; }
   .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #555; pointer-events: none; font-size: 16px; }
   .search-input { width: 100%; background: #1C1C1E; border: 1px solid #2C2C2E; border-radius: 12px; padding: 12px 14px 12px 40px; color: #F5F0E8; font-size: 14px; outline: none; font-family: inherit; transition: border-color 0.2s; }
   .search-input:focus { border-color: #C8A882; }
+  /* Cats */
   .cats { display: flex; gap: 6px; overflow-x: auto; margin-bottom: 16px; padding-bottom: 4px; scrollbar-width: none; }
   .cats::-webkit-scrollbar { display: none; }
-  .cat-btn { background: #1C1C1E; border: 1px solid #2C2C2E; border-radius: 20px; padding: 6px 14px; color: #888; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; font-family: inherit; transition: all 0.15s; }
+  .cat-btn { background: #1C1C1E; border: 1px solid #2C2C2E; border-radius: 20px; padding: 6px 14px; color: #888; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; font-family: inherit; }
   .cat-btn.active { background: #C8A882; border-color: #C8A882; color: #1C1C1E; }
+  /* AI Box */
   .ai-box { background: #1C1C1E; border: 1px solid #2C2C2E; border-radius: 14px; padding: 16px; margin-bottom: 20px; }
   .ai-label { font-size: 11px; font-weight: 700; color: #C8A882; letter-spacing: 0.07em; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
   .ai-row { display: flex; gap: 8px; }
   .ai-input { flex: 1; background: #252527; border: 1px solid #3A3A3C; border-radius: 10px; padding: 10px 14px; color: #F5F0E8; font-size: 13px; outline: none; font-family: inherit; }
-  .ai-result { margin-top: 12px; color: #C0B8A8; font-size: 13px; line-height: 1.7; border-left: 2px solid #C8A882; padding-left: 12px; }
+  .ai-result { margin-top: 12px; color: #C0B8A8; font-size: 13px; line-height: 1.7; border-left: 2px solid #C8A882; padding-left: 12px; white-space: pre-wrap; }
+  /* Cards */
   .recipe-list { display: flex; flex-direction: column; gap: 10px; }
-  .recipe-card { background: #1C1C1E; border: 1px solid #2C2C2E; border-radius: 16px; padding: 18px 20px; cursor: pointer; transition: border-color 0.2s, transform 0.15s; position: relative; overflow: hidden; }
-  .recipe-card:active { transform: scale(0.98); border-color: #C8A882; }
+  .recipe-card { background: #1C1C1E; border: 1px solid #2C2C2E; border-radius: 16px; padding: 18px 20px; cursor: pointer; transition: border-color 0.2s; position: relative; overflow: hidden; }
+  .recipe-card:active { border-color: #C8A882; }
   .card-stripe { position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, #C8A882, #E8C89200); }
   .card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
   .card-name { font-size: 17px; font-weight: 700; color: #F5F0E8; margin-bottom: 6px; letter-spacing: -0.01em; }
@@ -40,12 +51,15 @@
   .tag-gold { background: #C8A88222; color: #C8A882; border: 1px solid #C8A88244; }
   .tag-teal { background: #7A9E9F22; color: #7A9E9F; border: 1px solid #7A9E9F44; }
   .tag-purple { background: #8E7DBE22; color: #8E7DBE; border: 1px solid #8E7DBE44; }
+  .tag-red { background: #FF453A22; color: #FF6B6B; border: 1px solid #FF453A44; }
   .card-summary { font-size: 12px; color: #888; line-height: 1.5; font-style: italic; }
   .del-btn { background: none; border: none; color: #555; cursor: pointer; padding: 4px; border-radius: 6px; font-size: 16px; flex-shrink: 0; }
+  /* Empty */
   .empty { text-align: center; padding: 60px 20px; color: #555; }
   .empty-icon { font-size: 48px; margin-bottom: 12px; }
-  .empty-title { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+  .empty-title { font-size: 16px; font-weight: 600; margin-bottom: 6px; color: #888; }
   .empty-sub { font-size: 13px; }
+  /* Form */
   .form { display: flex; flex-direction: column; gap: 16px; }
   .field { display: flex; flex-direction: column; gap: 6px; }
   .field-label { font-size: 11px; font-weight: 700; color: #888; letter-spacing: 0.07em; text-transform: uppercase; }
@@ -58,10 +72,10 @@
   .ai-hint { font-size: 12px; color: #C8A882; margin-top: 4px; font-style: italic; }
   .form-btns { display: flex; gap: 10px; padding-top: 4px; }
   .btn-save { flex: 1; background: linear-gradient(135deg, #C8A882, #A88060); border: none; border-radius: 12px; padding: 14px; color: #1C1C1E; font-size: 15px; font-weight: 800; cursor: pointer; font-family: inherit; }
-  .btn-save:disabled { opacity: 0.4; }
   .btn-cancel { background: #2C2C2E; border: none; border-radius: 12px; padding: 14px 20px; color: #888; font-size: 15px; font-weight: 600; cursor: pointer; font-family: inherit; }
-  .btn-ai-gen { background: linear-gradient(135deg, #C8A882, #B89872); border: none; border-radius: 10px; padding: 0 14px; color: #1C1C1E; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; white-space: nowrap; font-family: inherit; }
+  .btn-ai-gen { background: linear-gradient(135deg, #C8A882, #B89872); border: none; border-radius: 10px; padding: 0 14px; color: #1C1C1E; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; white-space: nowrap; font-family: inherit; height: 44px; }
   .btn-ai-gen:disabled { opacity: 0.5; }
+  /* Modal */
   .modal-overlay { position: fixed; inset: 0; background: #000000CC; z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 16px; }
   .modal { background: #1C1C1E; border: 1px solid #3A3A3C; border-radius: 20px; width: 100%; max-width: 560px; max-height: 85vh; overflow-y: auto; padding: 28px; position: relative; }
   .modal-stripe { position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #C8A882, #8E7DBE, #7A9E9F); border-radius: 20px 20px 0 0; }
@@ -77,8 +91,24 @@
   .tips-box { margin-top: 14px; background: #252527; border-radius: 12px; padding: 14px 16px; border-left: 3px solid #C8A882; }
   .tips-header { font-size: 11px; font-weight: 700; color: #C8A882; margin-bottom: 8px; letter-spacing: 0.06em; text-transform: uppercase; }
   .tips-text { color: #C0B8A8; font-size: 13px; line-height: 1.7; white-space: pre-wrap; }
-
-  /* API Key Setup Screen */
+  /* Kühlschrank Tab */
+  .fridge-section { margin-bottom: 20px; }
+  .fridge-title { font-size: 22px; font-weight: 900; color: #F5F0E8; letter-spacing: -0.02em; margin-bottom: 4px; }
+  .fridge-sub { font-size: 13px; color: #666; margin-bottom: 20px; }
+  .ingredient-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; min-height: 20px; }
+  .ing-tag { background: #252527; border: 1px solid #3A3A3C; border-radius: 20px; padding: 6px 12px; font-size: 13px; color: #D0C8B8; display: flex; align-items: center; gap: 6px; }
+  .ing-tag-del { background: none; border: none; color: #555; cursor: pointer; font-size: 14px; padding: 0; line-height: 1; }
+  .ing-add-row { display: flex; gap: 8px; margin-bottom: 20px; }
+  .suggestion-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+  .chip { background: #1C1C1E; border: 1px dashed #3A3A3C; border-radius: 20px; padding: 5px 12px; font-size: 12px; color: #888; cursor: pointer; font-family: inherit; }
+  .chip:active { background: #252527; color: #C8A882; border-color: #C8A882; }
+  .recipe-suggestions { display: flex; flex-direction: column; gap: 12px; }
+  .suggestion-card { background: #1C1C1E; border: 1px solid #2C2C2E; border-radius: 16px; padding: 18px 20px; position: relative; overflow: hidden; }
+  .suggestion-card-stripe { position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, #8E7DBE, #7A9E9F00); }
+  .suggestion-name { font-size: 17px; font-weight: 700; color: #F5F0E8; margin-bottom: 6px; }
+  .suggestion-desc { font-size: 13px; color: #888; line-height: 1.6; margin-bottom: 10px; }
+  .btn-save-recipe { background: linear-gradient(135deg, #C8A882, #A88060); border: none; border-radius: 8px; padding: 8px 16px; color: #1C1C1E; font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit; }
+  /* Setup */
   .setup-screen { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
   .setup-card { background: #1C1C1E; border: 1px solid #2C2C2E; border-radius: 20px; padding: 32px 28px; width: 100%; max-width: 440px; }
   .setup-logo { font-size: 40px; margin-bottom: 16px; }
@@ -89,6 +119,11 @@
   .btn-setup { width: 100%; background: linear-gradient(135deg, #C8A882, #A88060); border: none; border-radius: 12px; padding: 14px; color: #1C1C1E; font-size: 15px; font-weight: 800; cursor: pointer; font-family: inherit; }
   .setup-note { font-size: 11px; color: #555; margin-top: 12px; line-height: 1.6; }
   .setup-error { color: #FF453A; font-size: 13px; margin-bottom: 10px; }
+  .loading-dots { display: inline-flex; gap: 4px; }
+  .loading-dots span { width: 6px; height: 6px; background: #C8A882; border-radius: 50%; animation: bounce 1.2s infinite; }
+  .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce { 0%,80%,100%{transform:scale(0.6);opacity:0.4} 40%{transform:scale(1);opacity:1} }
 </style>
 </head>
 <body>
@@ -111,13 +146,21 @@
   <div class="header">
     <div class="header-inner">
       <div>
-        <div class="header-title">Meine Rezepte</div>
+        <div class="header-title" id="headerTitle">Meine Rezepte</div>
         <div class="header-count" id="recipeCount">0 gespeichert</div>
       </div>
       <div id="headerBtn"></div>
     </div>
   </div>
   <div class="main" id="mainContent"></div>
+  <div class="tabbar">
+    <button class="tab active" id="tab-recipes" onclick="switchTab('recipes')">
+      <span class="tab-icon">📖</span><span class="tab-label">Rezepte</span>
+    </button>
+    <button class="tab" id="tab-fridge" onclick="switchTab('fridge')">
+      <span class="tab-icon">🥦</span><span class="tab-label">Kühlschrank</span>
+    </button>
+  </div>
 </div>
 
 <!-- Modal -->
@@ -130,11 +173,14 @@
 </div>
 
 <script>
-const CATEGORIES = ["Frühstück","Mittagessen","Abendessen","Snack","Dessert","Getränke"];
+const CATEGORIES = ["Frühstück","Mittagessen","Abendessen","Snack","Dessert","Albanisch"];
 const STORAGE_KEY = "grs-rezepte-v1";
 const KEY_STORAGE = "grs-api-key";
+const FRIDGE_KEY = "grs-fridge-v1";
+const QUICK_INGREDIENTS = ["Eier","Milch","Butter","Mehl","Zwiebeln","Knoblauch","Tomaten","Kartoffeln","Hähnchen","Hackfleisch","Nudeln","Reis","Käse","Joghurt","Paprika","Zucchini","Möhren","Spinat","Sahne","Olivenöl"];
 
 let state = {
+  tab: "recipes",
   view: "list",
   recipes: [],
   search: "",
@@ -143,124 +189,116 @@ let state = {
   aiQuery: "",
   aiResult: "",
   aiLoading: false,
+  fridge: [],
+  fridgeInput: "",
+  fridgeSuggestions: [],
+  fridgeLoading: false,
 };
 
-function getKey() { return localStorage.getItem(KEY_STORAGE) || ""; }
-
+function getKey() { return localStorage.getItem(KEY_STORAGE)||""; }
 function saveKey() {
-  const k = document.getElementById("keyInput").value.trim();
-  if (!k.startsWith("sk-ant-")) {
-    document.getElementById("setupError").style.display = "block";
-    document.getElementById("setupError").textContent = "Ungültiger Key — muss mit sk-ant- beginnen.";
-    return;
-  }
-  localStorage.setItem(KEY_STORAGE, k);
-  startApp();
+  const k=document.getElementById("keyInput").value.trim();
+  if (!k.startsWith("sk-ant-")) { document.getElementById("setupError").style.display="block"; document.getElementById("setupError").textContent="Ungültiger Key."; return; }
+  localStorage.setItem(KEY_STORAGE,k); startApp();
 }
-
-function loadRecipes() {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); } catch { return []; }
-}
-function saveRecipes(r) { localStorage.setItem(STORAGE_KEY, JSON.stringify(r)); }
+function loadRecipes() { try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]");}catch{return[];} }
+function saveRecipes(r) { localStorage.setItem(STORAGE_KEY,JSON.stringify(r)); }
+function loadFridge() { try{return JSON.parse(localStorage.getItem(FRIDGE_KEY)||"[]");}catch{return[];} }
+function saveFridge(f) { localStorage.setItem(FRIDGE_KEY,JSON.stringify(f)); }
 
 async function callAI(prompt) {
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": getKey(),
-      "anthropic-version": "2023-06-01",
-      "anthropic-dangerous-direct-browser-access": "true"
-    },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-5",
-      max_tokens: 1000,
-      messages: [{ role: "user", content: prompt }]
-    })
+  const res=await fetch("https://api.anthropic.com/v1/messages",{
+    method:"POST",
+    headers:{"Content-Type":"application/json","x-api-key":getKey(),"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+    body:JSON.stringify({model:"claude-haiku-4-5",max_tokens:1500,messages:[{role:"user",content:prompt}]})
   });
-  const data = await res.json();
-  if (data.error) throw new Error(data.error.message);
-  return (data.content || []).map(b => b.text || "").join("");
+  const data=await res.json();
+  if(data.error) throw new Error(data.error.message);
+  return (data.content||[]).map(b=>b.text||"").join("");
 }
 
 function startApp() {
-  document.getElementById("setupScreen").style.display = "none";
-  document.getElementById("appScreen").style.display = "block";
-  state.recipes = loadRecipes();
+  document.getElementById("setupScreen").style.display="none";
+  document.getElementById("appScreen").style.display="block";
+  state.recipes=loadRecipes();
+  state.fridge=loadFridge();
+  render();
+}
+function init() { getKey()?startApp():document.getElementById("setupScreen").style.display="flex"; }
+
+function switchTab(tab) {
+  state.tab=tab; state.view="list";
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  document.getElementById("tab-"+tab).classList.add("active");
   render();
 }
 
-function init() {
-  if (getKey()) {
-    startApp();
-  } else {
-    document.getElementById("setupScreen").style.display = "flex";
-  }
-}
-
 function render() {
-  document.getElementById("recipeCount").textContent = state.recipes.length + " gespeichert";
+  document.getElementById("recipeCount").textContent = state.tab==="recipes" ? state.recipes.length+" gespeichert" : state.fridge.length+" Zutaten";
+  document.getElementById("headerTitle").textContent = state.tab==="recipes" ? "Meine Rezepte" : "Kühlschrank";
   renderHeader();
   renderMain();
   renderModal();
 }
 
 function renderHeader() {
-  const btn = document.getElementById("headerBtn");
-  if (state.view === "list") {
-    btn.innerHTML = `<button class="btn-gold" onclick="setView('add')"><span style="font-size:20px;line-height:1">+</span> Neu</button>`;
+  const btn=document.getElementById("headerBtn");
+  if (state.tab==="fridge") { btn.innerHTML=""; return; }
+  if (state.view==="list") {
+    btn.innerHTML=`<button class="btn-gold" onclick="setView('add')"><span style="font-size:20px;line-height:1">+</span> Neu</button>`;
   } else {
-    btn.innerHTML = `<button class="btn-gray" onclick="setView('list')">✕</button>`;
+    btn.innerHTML=`<button class="btn-gray" onclick="setView('list')">✕</button>`;
   }
 }
 
 function renderMain() {
-  const el = document.getElementById("mainContent");
-  if (state.view === "add") { el.innerHTML = renderAddForm(); }
-  else { el.innerHTML = renderList(); }
+  const el=document.getElementById("mainContent");
+  if (state.tab==="fridge") { el.innerHTML=renderFridge(); return; }
+  if (state.view==="add") { el.innerHTML=renderAddForm(); return; }
+  el.innerHTML=renderList();
 }
 
 function renderList() {
-  const filtered = state.recipes.filter(r => {
-    const q = state.search.toLowerCase();
-    const matchS = !q || r.name.toLowerCase().includes(q) || (r.ingredients||"").toLowerCase().includes(q);
-    const matchC = !state.filterCat || r.category === state.filterCat;
-    return matchS && matchC;
+  const filtered=state.recipes.filter(r=>{
+    const q=state.search.toLowerCase();
+    const matchS=!q||r.name.toLowerCase().includes(q)||(r.ingredients||"").toLowerCase().includes(q);
+    const matchC=!state.filterCat||r.category===state.filterCat;
+    return matchS&&matchC;
   });
-  const catBtns = ["Alle", ...CATEGORIES].map(c => {
-    const active = c === "Alle" ? !state.filterCat : state.filterCat === c;
+  const catBtns=["Alle",...CATEGORIES].map(c=>{
+    const active=c==="Alle"?!state.filterCat:state.filterCat===c;
     return `<button class="cat-btn ${active?"active":""}" onclick="setFilterCat('${c}')">${c}</button>`;
   }).join("");
-  const cards = filtered.length === 0
-    ? `<div class="empty"><div class="empty-icon">🍽️</div><div class="empty-title">${state.recipes.length===0?"Noch keine Rezepte":"Keine Treffer"}</div><div class="empty-sub">${state.recipes.length===0?"+ Neu antippen um loszulegen":"Andere Suche versuchen"}</div></div>`
-    : `<div class="recipe-list">${filtered.map(r=>renderCard(r)).join("")}</div>`;
-  const aiResult = state.aiResult ? `<div class="ai-result">${escHtml(state.aiResult)}</div>` : "";
+  const cards=filtered.length===0
+    ?`<div class="empty"><div class="empty-icon">🍽️</div><div class="empty-title">${state.recipes.length===0?"Noch keine Rezepte":"Keine Treffer"}</div><div class="empty-sub">${state.recipes.length===0?"+ Neu antippen um loszulegen":"Andere Suche versuchen"}</div></div>`
+    :`<div class="recipe-list">${filtered.map(r=>renderCard(r)).join("")}</div>`;
+  const aiResult=state.aiResult?`<div class="ai-result">${escHtml(state.aiResult)}</div>`:"";
   return `
-    <div class="search-wrap">
-      <span class="search-icon">🔍</span>
+    <div class="search-wrap"><span class="search-icon">🔍</span>
       <input class="search-input" type="text" placeholder="Rezepte durchsuchen..." value="${escHtml(state.search)}" oninput="setSearch(this.value)">
     </div>
     <div class="cats">${catBtns}</div>
     <div class="ai-box">
       <div class="ai-label">✦ KI Assistent</div>
       <div class="ai-row">
-        <input class="ai-input" type="text" placeholder="Was kann ich heute kochen? Was mit Hähnchen?" value="${escHtml(state.aiQuery)}"
+        <input class="ai-input" type="text" placeholder="Was kann ich heute kochen?" value="${escHtml(state.aiQuery)}"
           oninput="state.aiQuery=this.value" onkeydown="if(event.key==='Enter')doAISearch()">
-        <button class="btn-gold" onclick="doAISearch()" style="white-space:nowrap;padding:0 16px">${state.aiLoading?"...":"Fragen"}</button>
+        <button class="btn-gold" onclick="doAISearch()" style="white-space:nowrap;padding:0 16px">${state.aiLoading?`<div class="loading-dots"><span></span><span></span><span></span></div>`:"Fragen"}</button>
       </div>
       ${aiResult}
     </div>
-    ${cards}
-  `;
+    ${cards}`;
 }
 
 function renderCard(r) {
-  const tags = [
-    r.category?`<span class="tag tag-gold">${escHtml(r.category)}</span>`:"",
+  const alb=r.category==="Albanisch"?`<span class="tag tag-red">🇦🇱 Albanisch</span>`:"";
+  const tags=[
+    r.category&&r.category!=="Albanisch"?`<span class="tag tag-gold">${escHtml(r.category)}</span>`:"",
+    alb,
     r.duration?`<span class="tag tag-teal">⏱ ${escHtml(r.duration)} min</span>`:"",
     r.servings?`<span class="tag tag-purple">👥 ${escHtml(r.servings)}</span>`:"",
   ].join("");
-  const summary = r.aiSummary?`<div class="card-summary">${escHtml(r.aiSummary)}</div>`:"";
+  const summary=r.aiSummary?`<div class="card-summary">${escHtml(r.aiSummary)}</div>`:"";
   return `<div class="recipe-card" onclick="openRecipe(${r.id})">
     <div class="card-stripe"></div>
     <div class="card-top">
@@ -270,12 +308,56 @@ function renderCard(r) {
   </div>`;
 }
 
+function renderFridge() {
+  const ingTags=state.fridge.map((ing,i)=>
+    `<div class="ing-tag">${escHtml(ing)}<button class="ing-tag-del" onclick="removeIngredient(${i})">×</button></div>`
+  ).join("");
+  const chips=QUICK_INGREDIENTS.filter(q=>!state.fridge.includes(q)).slice(0,12).map(q=>
+    `<button class="chip" onclick="addIngredient('${q}')">${q}</button>`
+  ).join("");
+  const suggestions=state.fridgeSuggestions.length>0
+    ?`<div style="margin-top:4px"><div class="ai-label" style="margin-bottom:12px">✦ KI Vorschläge für dich</div><div class="recipe-suggestions">${state.fridgeSuggestions.map((s,i)=>renderSuggestion(s,i)).join("")}</div></div>`
+    :"";
+  return `
+    <div class="fridge-section">
+      <div class="fridge-title">Was hast du zuhause?</div>
+      <div class="fridge-sub">Trag deine Zutaten ein — die KI findet passende albanische & internationale Rezepte.</div>
+      <div class="ing-add-row">
+        <input class="field-input" id="fridgeInput" type="text" placeholder="Zutat eingeben..." style="flex:1"
+          onkeydown="if(event.key==='Enter'){addIngredientFromInput();}" value="${escHtml(state.fridgeInput)}">
+        <button class="btn-gold" onclick="addIngredientFromInput()" style="padding:0 16px">+</button>
+      </div>
+      ${state.fridge.length>0?`<div class="ingredient-tags">${ingTags}</div>`:`<div class="ingredient-tags" style="color:#555;font-size:13px">Noch keine Zutaten</div>`}
+      <div style="font-size:11px;color:#555;text-transform:uppercase;letter-spacing:0.06em;font-weight:700;margin-bottom:8px">Schnell hinzufügen</div>
+      <div class="suggestion-chips">${chips}</div>
+      ${state.fridge.length>=2?`
+        <button class="btn-save" onclick="getRecipeSuggestions()" style="width:100%;margin-bottom:20px" ${state.fridgeLoading?"disabled":""}>
+          ${state.fridgeLoading?`<div class="loading-dots"><span></span><span></span><span></span></div>`:"🍳 Rezepte vorschlagen lassen"}
+        </button>`:""}
+      ${suggestions}
+    </div>`;
+}
+
+function renderSuggestion(s, i) {
+  return `<div class="suggestion-card">
+    <div class="suggestion-card-stripe"></div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+      <div style="flex:1">
+        <div class="suggestion-name">${escHtml(s.name)}</div>
+        ${s.origin?`<span class="tag tag-red" style="display:inline-flex;margin-bottom:8px">${escHtml(s.origin)}</span>`:""}
+        <div class="suggestion-desc">${escHtml(s.description)}</div>
+        ${s.time?`<div style="font-size:11px;color:#7A9E9F;margin-top:4px">⏱ ${escHtml(s.time)}</div>`:""}
+      </div>
+      <button class="btn-save-recipe" onclick="saveSuggestionAsRecipe(${i})">+ Speichern</button>
+    </div>
+  </div>`;
+}
+
 function renderAddForm() {
   return `<div class="form">
-    <div class="field">
-      <div class="field-label">Rezeptname *</div>
+    <div class="field"><div class="field-label">Rezeptname *</div>
       <div class="field-row">
-        <input class="field-input" id="f-name" type="text" placeholder="z.B. Spaghetti Carbonara" style="flex:1">
+        <input class="field-input" id="f-name" type="text" placeholder="z.B. Tavë Kosi" style="flex:1">
         <button class="btn-ai-gen" id="aiGenBtn" onclick="aiGenerate()">✦ KI</button>
       </div>
       <div class="ai-hint" id="aiHint" style="display:none"></div>
@@ -287,8 +369,8 @@ function renderAddForm() {
       <div class="field"><div class="field-label">Dauer (min)</div><input class="field-input" id="f-dur" type="number" placeholder="30"></div>
       <div class="field"><div class="field-label">Portionen</div><input class="field-input" id="f-srv" type="number" placeholder="4"></div>
     </div>
-    <div class="field"><div class="field-label">Zutaten (jede Zeile = eine Zutat)</div>
-      <textarea class="field-textarea" id="f-ing" rows="5" placeholder="200g Spaghetti&#10;3 Eier&#10;100g Speck..."></textarea>
+    <div class="field"><div class="field-label">Zutaten</div>
+      <textarea class="field-textarea" id="f-ing" rows="5" placeholder="200g Spaghetti&#10;3 Eier..."></textarea>
     </div>
     <div class="field"><div class="field-label">Zubereitung</div>
       <textarea class="field-textarea" id="f-ins" rows="5" placeholder="Schritt für Schritt..."></textarea>
@@ -301,19 +383,16 @@ function renderAddForm() {
 }
 
 function renderModal() {
-  const overlay = document.getElementById("modal");
-  if (!state.selectedRecipe) { overlay.style.display="none"; return; }
+  const overlay=document.getElementById("modal");
+  if (!state.selectedRecipe){overlay.style.display="none";return;}
   overlay.style.display="flex";
-  const r = state.selectedRecipe;
-  const tags = [
-    r.category?`<span class="tag tag-gold">${escHtml(r.category)}</span>`:"",
-    r.duration?`<span class="tag tag-teal">⏱ ${escHtml(r.duration)} min</span>`:"",
-    r.servings?`<span class="tag tag-purple">👥 ${escHtml(r.servings)} Portionen</span>`:"",
-  ].join("");
-  const ings = r.ingredients?`<div class="section-label">Zutaten</div><div class="ingredient-list">${r.ingredients.split("\n").filter(l=>l.trim()).map(l=>`<div class="ingredient-item"><span class="ingredient-dot">·</span> ${escHtml(l)}</div>`).join("")}</div>`:"";
-  const ins = r.instructions?`<div class="section-label">Zubereitung</div><div class="instructions-text">${escHtml(r.instructions)}</div>`:"";
-  const tipsDiv = r._tips?`<div class="tips-box"><div class="tips-header">✦ KI Empfehlungen</div><div class="tips-text">${escHtml(r._tips)}</div></div>`:"";
-  document.getElementById("modalContent").innerHTML = `
+  const r=state.selectedRecipe;
+  const alb=r.category==="Albanisch"?`<span class="tag tag-red">🇦🇱 Albanisch</span>`:"";
+  const tags=[r.category&&r.category!=="Albanisch"?`<span class="tag tag-gold">${escHtml(r.category)}</span>`:"",alb,r.duration?`<span class="tag tag-teal">⏱ ${escHtml(r.duration)} min</span>`:"",r.servings?`<span class="tag tag-purple">👥 ${escHtml(r.servings)} Portionen</span>`:""].join("");
+  const ings=r.ingredients?`<div class="section-label">Zutaten</div><div class="ingredient-list">${r.ingredients.split("\n").filter(l=>l.trim()).map(l=>`<div class="ingredient-item"><span class="ingredient-dot">·</span> ${escHtml(l)}</div>`).join("")}</div>`:"";
+  const ins=r.instructions?`<div class="section-label">Zubereitung</div><div class="instructions-text">${escHtml(r.instructions)}</div>`:"";
+  const tipsDiv=r._tips?`<div class="tips-box"><div class="tips-header">✦ KI Empfehlungen</div><div class="tips-text">${escHtml(r._tips)}</div></div>`:"";
+  document.getElementById("modalContent").innerHTML=`
     <div class="modal-title">${escHtml(r.name)}</div>
     <div class="tags" style="margin-bottom:20px">${tags}</div>
     ${ings}${ins}
@@ -323,69 +402,97 @@ function renderModal() {
     </div>`;
 }
 
-function setView(v) { state.view=v; render(); }
-function setSearch(v) { state.search=v; render(); }
-function setFilterCat(c) { state.filterCat=c==="Alle"?"":c; render(); }
-
-function openRecipe(id) { state.selectedRecipe=state.recipes.find(r=>r.id===id)||null; render(); }
-
-function deleteRecipe(id) {
-  if (!confirm("Rezept löschen?")) return;
-  state.recipes=state.recipes.filter(r=>r.id!==id);
-  saveRecipes(state.recipes);
-  if (state.selectedRecipe?.id===id) state.selectedRecipe=null;
-  render();
+// Fridge actions
+function addIngredientFromInput() {
+  const el=document.getElementById("fridgeInput");
+  const val=(el?el.value:state.fridgeInput).trim();
+  if (!val) return;
+  addIngredient(val);
+  if (el) el.value="";
+  state.fridgeInput="";
 }
-
-async function doAISearch() {
-  if (!state.aiQuery.trim()) return;
-  state.aiLoading=true; render();
-  const list=state.recipes.map(r=>`"${r.name}" (${r.category||"?"}, ${r.duration||"?"}min)`).join(", ");
-  state.aiResult=await callAI(`Ich habe folgende Rezepte gespeichert: ${list||"keine"}.\n\nFrage: "${state.aiQuery}"\n\nBeantworte die Frage auf Deutsch. Wenn Rezepte passen, nenne sie. Sei kurz und direkt.`).catch(e=>"Fehler: "+e.message);
-  state.aiLoading=false; render();
+function addIngredient(ing) {
+  if (!state.fridge.includes(ing)) { state.fridge.push(ing); saveFridge(state.fridge); state.fridgeSuggestions=[]; render(); }
 }
+function removeIngredient(i) { state.fridge.splice(i,1); saveFridge(state.fridge); state.fridgeSuggestions=[]; render(); }
 
-async function aiGenerate() {
-  const nameEl=document.getElementById("f-name");
-  if (!nameEl||!nameEl.value.trim()) return;
-  const btn=document.getElementById("aiGenBtn");
-  btn.textContent="..."; btn.disabled=true;
+async function getRecipeSuggestions() {
+  state.fridgeLoading=true; render();
   try {
-    const result=await callAI(`Erstelle ein vollständiges Rezept für "${nameEl.value.trim()}" auf Deutsch. Antworte NUR mit JSON, ohne Markdown:\n{"ingredients":"Zutat1\\nZutat2\\n...","instructions":"Schritt für Schritt...","duration":30,"servings":4,"summary":"Kurze appetitliche Beschreibung in 1 Satz"}`);
+    const result=await callAI(`Du bist ein Kochexperte mit Fokus auf albanische Küche.
+Ich habe folgende Zutaten zuhause: ${state.fridge.join(", ")}.
+
+Schlage mir 4 Rezepte vor — mindestens 2 davon sollten albanisch oder balkanisch sein (z.B. Tavë Kosi, Fergese, Byrek, Qofte, Fasule, Trilece, etc.). Die anderen können international sein.
+
+Antworte NUR mit JSON-Array, kein Markdown:
+[{"name":"Rezeptname","origin":"🇦🇱 Albanisch oder leer","description":"Kurze Beschreibung was es ist und warum die Zutaten passen","time":"30 min","ingredients":"Zutat1\\nZutat2\\n...","instructions":"Zubereitung Schritt für Schritt"}]`);
+    const clean=result.replace(/```json|```/g,"").trim();
+    state.fridgeSuggestions=JSON.parse(clean);
+  } catch(e) { state.fridgeSuggestions=[{name:"Fehler",origin:"",description:"KI konnte keine Vorschläge laden: "+e.message,time:"",ingredients:"",instructions:""}]; }
+  state.fridgeLoading=false; render();
+}
+
+function saveSuggestionAsRecipe(i) {
+  const s=state.fridgeSuggestions[i];
+  const recipe={ id:Date.now()+i, name:s.name, category:"Albanisch", duration:"", servings:"4", ingredients:s.ingredients||"", instructions:s.instructions||"", aiSummary:s.description||"", createdAt:new Date().toISOString() };
+  state.recipes.unshift(recipe); saveRecipes(state.recipes);
+  switchTab("recipes");
+}
+
+// Recipe actions
+function setView(v){state.view=v;render();}
+function setSearch(v){state.search=v;render();}
+function setFilterCat(c){state.filterCat=c==="Alle"?"":c;render();}
+function openRecipe(id){state.selectedRecipe=state.recipes.find(r=>r.id===id)||null;render();}
+function deleteRecipe(id){if(!confirm("Löschen?"))return;state.recipes=state.recipes.filter(r=>r.id!==id);saveRecipes(state.recipes);if(state.selectedRecipe?.id===id)state.selectedRecipe=null;render();}
+
+async function doAISearch(){
+  if(!state.aiQuery.trim())return;
+  state.aiLoading=true;render();
+  const list=state.recipes.map(r=>`"${r.name}"`).join(", ");
+  state.aiResult=await callAI(`Meine gespeicherten Rezepte: ${list||"keine"}.\nFrage: "${state.aiQuery}"\nAntworte auf Deutsch, kurz und direkt. Wenn es um albanische Küche geht, gib gerne Empfehlungen.`).catch(e=>"Fehler: "+e.message);
+  state.aiLoading=false;render();
+}
+
+async function aiGenerate(){
+  const nameEl=document.getElementById("f-name");
+  if(!nameEl||!nameEl.value.trim())return;
+  const btn=document.getElementById("aiGenBtn");
+  btn.textContent="...";btn.disabled=true;
+  try{
+    const result=await callAI(`Erstelle ein vollständiges Rezept für "${nameEl.value.trim()}" auf Deutsch. Falls es ein albanisches/balkanisches Gericht ist, bleib authentisch. Antworte NUR mit JSON:\n{"ingredients":"Zutat1\\nZutat2\\n...","instructions":"Schritt für Schritt...","duration":30,"servings":4,"summary":"Kurze Beschreibung"}`);
     const clean=result.replace(/```json|```/g,"").trim();
     const parsed=JSON.parse(clean);
-    if (parsed.ingredients) document.getElementById("f-ing").value=parsed.ingredients;
-    if (parsed.instructions) document.getElementById("f-ins").value=parsed.instructions;
-    if (parsed.duration) document.getElementById("f-dur").value=parsed.duration;
-    if (parsed.servings) document.getElementById("f-srv").value=parsed.servings;
-    if (parsed.summary) { const h=document.getElementById("aiHint"); h.style.display="block"; h.textContent="✦ "+parsed.summary; }
-  } catch(e) {}
-  btn.textContent="✦ KI"; btn.disabled=false;
+    if(parsed.ingredients)document.getElementById("f-ing").value=parsed.ingredients;
+    if(parsed.instructions)document.getElementById("f-ins").value=parsed.instructions;
+    if(parsed.duration)document.getElementById("f-dur").value=parsed.duration;
+    if(parsed.servings)document.getElementById("f-srv").value=parsed.servings;
+    if(parsed.summary){const h=document.getElementById("aiHint");h.style.display="block";h.textContent="✦ "+parsed.summary;}
+  }catch(e){}
+  btn.textContent="✦ KI";btn.disabled=false;
 }
 
-function saveNewRecipe() {
+function saveNewRecipe(){
   const name=document.getElementById("f-name")?.value?.trim();
-  if (!name) return;
+  if(!name)return;
   const hint=document.getElementById("aiHint");
-  const recipe={ id:Date.now(), name, category:document.getElementById("f-cat")?.value||"", duration:document.getElementById("f-dur")?.value||"", servings:document.getElementById("f-srv")?.value||"", ingredients:document.getElementById("f-ing")?.value||"", instructions:document.getElementById("f-ins")?.value||"", aiSummary:hint?.style.display!=="none"?hint?.textContent?.replace("✦ ",""):"", createdAt:new Date().toISOString() };
-  state.recipes.unshift(recipe);
-  saveRecipes(state.recipes);
-  state.view="list"; render();
+  const recipe={id:Date.now(),name,category:document.getElementById("f-cat")?.value||"",duration:document.getElementById("f-dur")?.value||"",servings:document.getElementById("f-srv")?.value||"",ingredients:document.getElementById("f-ing")?.value||"",instructions:document.getElementById("f-ins")?.value||"",aiSummary:hint?.style.display!=="none"?hint?.textContent?.replace("✦ ",""):"",createdAt:new Date().toISOString()};
+  state.recipes.unshift(recipe);saveRecipes(state.recipes);state.view="list";render();
 }
 
-async function fetchTips() {
-  const r=state.selectedRecipe; if (!r) return;
-  r._tipsLoading=true; render();
-  const tips=await callAI(`Du bist ein professioneller Koch. Gib 3 kurze, praktische Profi-Tipps für dieses Rezept auf Deutsch. Nur die Tipps, keine Einleitung.\n\nRezept: ${r.name}\nZutaten: ${r.ingredients}\nZubereitung: ${r.instructions}`).catch(()=>"Fehler.");
-  r._tips=tips; r._tipsLoading=false;
+async function fetchTips(){
+  const r=state.selectedRecipe;if(!r)return;
+  r._tipsLoading=true;render();
+  const tips=await callAI(`Du bist Profikoch. 3 kurze Profi-Tipps auf Deutsch für: ${r.name}\nZutaten: ${r.ingredients}\nZubereitung: ${r.instructions}`).catch(()=>"Fehler.");
+  r._tips=tips;r._tipsLoading=false;
   const idx=state.recipes.findIndex(x=>x.id===r.id);
-  if (idx>=0) state.recipes[idx]=r;
-  saveRecipes(state.recipes); render();
+  if(idx>=0)state.recipes[idx]=r;
+  saveRecipes(state.recipes);render();
 }
 
-function escHtml(str) { return String(str||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function escHtml(str){return String(str||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
 
-document.getElementById("modal").addEventListener("click",function(e){ if(e.target===this){state.selectedRecipe=null;render();}});
+document.getElementById("modal").addEventListener("click",function(e){if(e.target===this){state.selectedRecipe=null;render();}});
 document.getElementById("modalClose").addEventListener("click",function(){state.selectedRecipe=null;render();});
 
 init();
